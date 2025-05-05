@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.html import mark_safe
 BOURSIER_CHOICES = [
         ('oui', 'Oui'),
         ('non', 'Non'),
@@ -14,6 +15,8 @@ SEMESTRE_CHOICES = [
         (3, 'Semestre 3'),
         (4, 'Semestre 4'),
         (5, 'Semestre 5'),
+        (6, 'Semestre 6'),
+        (0, 'Annuelle'),
     ]
 TYPE_CHOICES = [
         ('mensuelle', 'Mensuelle'),
@@ -92,7 +95,8 @@ class Etudiant(models.Model):
     idboursier=models.ForeignKey(Boursier, on_delete=models.SET_NULL,verbose_name="Boursier Etudiants",null=True)
     def __str__(self):
         return self.identifiant
-   
+    def Image(self):
+        return mark_safe(f'<img src="{self.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
     
 
 
@@ -115,6 +119,8 @@ class Note(models.Model):
     rang = models.IntegerField(blank=True,null=True,verbose_name="Rang")
     fichier = models.FileField(upload_to='notes/', blank=True, null=True, verbose_name="Fichier")
     type = models.CharField(max_length=10, choices=TYPE_CHOICES,default='mensuelle', verbose_name="Type")
+    def Image(self):
+        return mark_safe(f'<img src="{self.identifiant.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
     
     def __str__(self):
         return f"{self.identifiant} - {self.annees} - {self.semestre}"
@@ -123,6 +129,8 @@ class Ecolage(models.Model):
     identifiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
     date = models.CharField(max_length=10, choices=MONTH_CHOICES, verbose_name="Mois")
     payé = models.CharField(max_length=3, choices=PAYE_CHOICES, verbose_name="Payé")
+    def Image(self):
+        return mark_safe(f'<img src="{self.identifiant.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
     def __str__(self):
         return f"{self.identifiant} - {self.date} - {self.payé}"
 
@@ -131,7 +139,9 @@ class Avertissement(models.Model):
     date = models.DateField(blank=True,null=True,verbose_name="Date")
     raison = models.TextField(blank=True,null=True,verbose_name="Raison")
     decision = models.TextField(blank=True,null=True,verbose_name="Décision")
-    
+    def Image(self):
+        return mark_safe(f'<img src="{self.identifiant.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
+
     def __str__(self):
         return f"{self.identifiant} - {self.date}"
     
@@ -156,9 +166,9 @@ class Professeur(models.Model):
     adresse = models.TextField(blank=True, null=True, verbose_name="Adresse")
     date_naissance = models.DateField(blank=True, null=True, verbose_name="Date de naissance")
     date_embauche = models.DateField(verbose_name="Date d'embauche")
-    idclass=models.ForeignKey(ClassModel, on_delete=models.SET_NULL,verbose_name="Classe Etudiants",null=True)
-    photo = models.ImageField(upload_to='professeures_photos/', default='default.png',blank=True, null=True,verbose_name="Photo de l'Professeurs")
-
+    photo = models.ImageField(upload_to='professeures_photos/', default='default.png',blank=True, null=True,verbose_name="Photo du Professeur")
+    def Image(self):
+        return mark_safe(f'<img src="{self.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
     class Meta:
         verbose_name = "Professeur"
         verbose_name_plural = "Professeurs"
@@ -174,7 +184,9 @@ class Personnel(models.Model):
     fonction = models.CharField(max_length=100, verbose_name="Fonction")  # Job position
     contact = models.CharField(max_length=15, verbose_name="Contact")  # Contact number
     date_d_embauche = models.DateField(verbose_name="Date d'embauche")  # Hiring date
-    photo = models.ImageField(upload_to='personnel_photos/', default='default.png',blank=True, null=True,verbose_name="Photo des Personnels")
+    photo = models.ImageField(upload_to='personnel_photos/', default='default.png',blank=True, null=True,verbose_name="Photo de Personnel")
+    def Image(self):
+        return mark_safe(f'<img src="{self.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
     def __str__(self):
         return f"{self.prenom} {self.nom} - {self.fonction}"
 
@@ -186,8 +198,12 @@ class Personnel(models.Model):
 class Matiere(models.Model):
     nom = models.CharField(max_length=100, verbose_name="Nom de la matière")
     professeur = models.ForeignKey(
-        Professeur, on_delete=models.SET_NULL, null=True, blank=True, related_name="matieres", verbose_name="Professeur"
+        Professeur, on_delete=models.SET_NULL, null=True, related_name="matieres", verbose_name="Professeur"
     )
+    classe=models.ForeignKey(ClassModel, on_delete=models.SET_NULL,verbose_name="Classe Etudiants",null=True)
+    def Image(self):
+        return mark_safe(f'<img src="{self.professeur.photo.url}" width="50" height="50" style="border-radius: 50%;" />')
+
 
     class Meta:
         verbose_name = "Matière"

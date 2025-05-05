@@ -2,7 +2,7 @@
 
 {% block layout %}
 {% include "main/components/heading.html" with name="Notes" %}
-{% include "main/tables/notes.html" %}
+{% include "main/tables/notes.html" with notes=notes %}
          <!--     <h1 class="text-center my-4 "> Les notes des étudiants de la classe <span class="font-bold text-blue-600 ">{{ request.GET.classes }}</span>  pour le semestre <span class="font-bold text-blue-600 ">{{ request.GET.semestre }}</span>  de l'année <span class="font-bold text-blue-600 ">{{ request.GET.annees }}</span> sont disponibles pour le type d'évaluation : <span class="font-bold text-blue-600 "> {{ request.GET.type }}</span> .</h1>
 
                 -->

@@ -242,8 +242,17 @@ def professeurs(request):
     return render(request,'main/professeures.html',{"professeurs":obj})
 @login_required(login_url='/login/')
 def matieres(request):
-    
-    return render(request,'main/matieres.html')
+    matieres= matieres = Matiere.objects.select_related('professeur', 'classe').all()
+    professeurs=Professeur.objects.all()
+    classes=ClassModel.objects.all()
+    query=request.GET.get('q', '')
+    if query:
+        matieres=matieres.filter(nom__icontains=query)
+    paginator=Paginator(matieres, 10)
+    page_number=request.GET.get('page')
+    obj=paginator.get_page(page_number)
+
+    return render(request,'main/matieres.html',{'matieres':obj,'professeurs':professeurs,'classes':classes})
 
 
 

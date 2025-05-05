@@ -1,0 +1,40 @@
+<section class="bg-gray-50 dark:bg-gray-900 sm:p-5">
+    <div class="w-full">
+      <div class="    relative     overflow-hidden">
+        <h1 class="text-center font-bold text-blue-500 text-xl p-4">Matières</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+          {% for matiere in matieres %}
+          <div class="bg-white dark:bg-gray-700 rounded-xl shadow p-4 hover:shadow-md transition duration-300">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+              {{ matiere.nom }}
+            </h2>
+            <div class="flex items-center space-x-3">
+              {% if matiere.professeur  %}
+              <img src="{{ matiere.professeur.photo.url }}" alt="{{ matiere.professeur.nom }}" class="w-12 h-12 rounded-full object-cover">
+              {% else %}
+              <div class="w-12 h-12 rounded-full bg-gray-300"></div>
+              {% endif %}
+              <div>
+                <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                    {% if matiere.professeur %}
+                    {{ matiere.professeur.nom }}
+                  {% else %}
+                    Aucun professeur
+                  {% endif %}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    {% if matiere.classe %}
+                    Classe: {{ matiere.classe.nom }}
+                  {% else %}
+                    Classe: Non assignée
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+  
