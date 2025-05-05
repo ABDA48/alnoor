@@ -1,0 +1,16 @@
+{% extends "main/layout.html" %}
+
+{% block layout %}
+{% include "main/components/heading.html" with name="Presences" %}
+
+<div class="flex justify-end ">
+    {% include "main/components/datepicker.html"  %}
+</div>
+
+ 
+  
+
+ 
+{% include "main/tables/presences.html" %}
+
+{% endblock layout %}

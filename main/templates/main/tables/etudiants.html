@@ -1,0 +1,141 @@
+<section class="bg-gray-50 dark:bg-gray-900  sm:p-5">
+    <div class="w-100 ">
+        <!-- Start coding here -->
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+            <h1 class="text-center font-bold text-blue-500 text-xl p-4"> Tables des Etudiants </h1> 
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+
+                <div class="w-full ">
+                    <form method="POST"  class="w-full flex space-between">
+
+                        {% csrf_token %}
+                        
+                        <label for="simple-search" class="sr-only">Recherche</label>
+                        <div class="relative w-full md:w-1/4 mx-2">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="text" name="q" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Recherche">
+                        </div>
+                    
+                        <button class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-blue-500 text-white rounded-lg border border-gray-200 hover:bg-blue-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="submit">
+                            Rechercher
+                        </button>
+                    </form>
+
+                    <form method="get" class="flex items-center jutsify-center space-between">
+
+                        
+
+                        <select name="class" id="class-filter" class="mt-2 mx-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="">Toutes les classes</option>
+        {% for class_option in all_classes %}
+            <option value="{{ class_option }}" {% if selected_class == class_option %}selected{% endif %}>{{ class_option }}</option>
+        {% endfor %}
+                        </select>
+                    
+                        <!-- Boursier Filter -->
+                        <select name="boursier" id="boursier-filter" class="mt-2 mx-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm 
+                        rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="">Boursier (tous)</option>
+                        <option value="oui" {% if selected_boursier == "oui" %}selected{% endif %}>Oui</option>
+                        <option value="non" {% if selected_boursier == "non" %}selected{% endif %}>Non</option>
+                    
+                        </select>
+
+
+                         <!-- Genre Filter -->
+                         <select name="genre" id="genre-filter" class="mt-2 mx-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm 
+                         rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                         <option value="">Genre (tous)</option>
+                         <option value="M" {% if selected_genre == "M" %}selected{% endif %}>M</option>
+                         <option value="F" {% if selected_genre == "F" %}selected{% endif %}>F</option>
+                     
+                         </select>
+                    
+                        
+                       
+
+                        <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown" class="mt-2 w-full md:w-auto flex items-center justify-center
+                         py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-4 w-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                            </svg>
+                            Filtrer
+                           
+                        </button>
+                        
+
+                         
+
+
+
+                    </form>
+                </div>
+               
+                    
+                 
+            </div>
+            <div class="mt-4 mx-4" >
+                <p> Nombre de résultats: <span class="font-bold"> {{ students_count }}</span></p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3"> Identifiant</th>
+                            <th scope="col" class="px-4 py-3">Nom</th>
+                            <th scope="col" class="px-4 py-3">Photo</th>
+                            <th scope="col" class="px-4 py-3">Date de Naissance</th>
+                            <th scope="col" class="px-4 py-3">Nom du Père</th>
+                            <th scope="col" class="px-4 py-3">Nom de la Mère</th>
+                            <th scope="col" class="px-4 py-3">Genre</th>
+                            <th scope="col" class="px-4 py-3">Contact des Parents</th>
+                            <th scope="col" class="px-4 py-3">Adresse</th>
+                            <th scope="col" class="px-4 py-3">Boursier</th>
+                            <th scope="col" class="px-4 py-3">Date d'Entrée</th>
+                            <th scope="col" class="px-4 py-3">Classe</th>
+                       
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for etudiant in etudiants %}
+                        <tr class="border-b dark:border-gray-700">
+                            <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <a href=" {% url 'etudiantPage' id=etudiant.id  %} ">  {{ etudiant.identifiant }}</a>
+                          
+                            
+                            </th>
+                            <td class="px-4 py-3">{{ etudiant.nom }}</td>
+                            <td class="px-4 py-3">
+                                <img src="{{ etudiant.photo.url }}" alt="{{ etudiant.nom }}" class="h-10 w-10 rounded-full">
+                            </td>
+                            <td class="px-4 py-3">{{ etudiant.date_de_naissance }}</td>
+                            <td class="px-4 py-3">{{ etudiant.nom_pere }}</td>
+                            <td class="px-4 py-3">{{ etudiant.nom_mere }}</td>
+                            <td class="px-4 py-3">{{ etudiant.genre }}</td>
+                            <td class="px-4 py-3">{{ etudiant.parent_contact }}</td>
+                            <td class="px-4 py-3">{{ etudiant.address}}</td>
+                            <td class="px-4 py-3">{{ etudiant.boursier }}</td>
+                            <td class="px-4 py-3">{{ etudiant.date_entree }}</td>
+                            <td class="px-4 py-3">{{ etudiant.idclass.nom }}</td>
+                            <td class="px-4 py-3">
+                    
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                        
+                       
+                        
+                       
+                    </tbody>
+                </table>
+            </div>
+            {% include "main/components/paginations.html" with obj=etudiants %}
+        </div>
+    </div>
+    </section>

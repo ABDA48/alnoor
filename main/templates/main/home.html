@@ -1,0 +1,88 @@
+{% extends "main/layout.html" %}
+
+{% block layout %}
+{% include "main/components/heading.html" with name="Tableau de bord" %}
+
+<div class="flex justify-end ">
+    {% include "main/components/datepicker.html"  %}
+
+</div>
+
+{% include "main/components/semiHeading.html" with header="Statistics" %}
+   
+  <form method="POST" action="" class="text-center mb-8">
+    {% csrf_token %}
+    
+    <select name="class" id="class" class="border p-2 w-1/4 rounded">
+    <option value="" >Tous les classes</option>
+        {% for key, value in classes.items %}
+            <option value="{{ key  }}" {% if selected_class == key  %} selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">Envoyer</button>
+</form> 
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6">
+    {% include "main/components/cardnumber.html" with name="Etudiant" number=etudiants|length    url="etudiants" %}
+    {% include "main/components/cardnumber.html" with name="Professeurs" number=professeurs|length   url="professeurs" %}
+    {% include "main/components/cardnumber.html" with name="Personnels" number=personelles|length  url="personelles" %}
+
+    
+ 
+</div>
+
+  <h1 class="text-center text-3xl font-bold mb-8">📊 Etudiants Distributions</h1>
+
+  
+    <div class="grid md:grid-cols-3 sm:grid-cols-1 gap-8 px-4">
+
+        <!-- Gender Distribution -->
+        <div class="bg-white p-4 shadow-lg rounded-lg flex flex-col items-center">
+            <h2 class="text-xl font-semibold mb-4">Gender Distribution</h2>
+            <canvas id="genderChart" class="w-full h-64"></canvas>
+        </div>
+ 
+        <!-- Presence -->
+        <div class="bg-white p-4 shadow-lg rounded-lg flex flex-col items-center">
+            <h2 class="text-xl font-semibold mb-4">Presence Distribution</h2>
+            <canvas id="presenceChart" class="w-full h-64"></canvas>
+        </div>
+
+        <!-- Age Group Distribution -->
+        <div class="bg-white p-4 shadow-lg rounded-lg flex flex-col items-center">
+            <h2 class="text-xl font-semibold mb-4">Age Group Distribution</h2>
+            <canvas id="ageChart" class="w-full h-64"></canvas>
+        </div>
+
+       
+
+    </div>
+
+  <script>
+    function createChart(id, type, labels, data, backgroundColors) {
+        new Chart(document.getElementById(id), {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors
+                }]
+            }
+        });
+    }
+
+    createChart("genderChart", "pie",
+        {{ gender_labels|safe }}, {{ gender_counts|safe }},
+        ["#FF6384", "#36A2EB"]);
+
+    
+    createChart("presenceChart", "pie",
+        {{ presence_labels|safe }}, {{ presence_counts|safe }},
+        ["#FF6384", "#36A2EB"]);
+
+    createChart("ageChart", "pie",
+        {{ age_labels|safe }}, {{ age_counts|safe }},
+         ["#FFCE56", "#FF6384", "#36A2EB", "#4BC0C0"]);
+</script>
+{% endblock layout %}

@@ -1,0 +1,58 @@
+{% extends "main/layout.html" %}
+
+{% block layout %}
+{% include "main/components/heading.html" with name="Classes" %}
+
+{% include "main/components/semiHeading.html" with header="📊 Classes Distributions " %}
+<!-- 
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-4">
+    {% for key,value in  class_etudiants.items %}
+    {% include "main/components/cardnumber.html" with name=key number=value sizeNumber="50" sizeName="15"  url="etudiants" %}
+    {% endfor %}
+ 
+</div>
+-->
+  
+    <div class="w-full  px-4">
+        <!-- Class Distribution -->
+        <div class="bg-white p-4 shadow-lg rounded-lg flex flex-col items-center">
+           
+            <canvas id="classChart" class="w-full h-64"></canvas>
+        </div>
+    </div>
+
+<script>
+    function createBarChart(id, labels, data, horizontal = false) {
+         let colors = [
+            "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40",
+            "#C9CBCF", "#76FF03", "#D32F2F", "#00897B"
+        ];
+        let backgroundColors = labels.map((_, i) => colors[i % colors.length]);
+        let borderColors = backgroundColors.map(color => color.replace("1)", "0.8)"));
+
+        new Chart(document.getElementById(id), {
+            type: horizontal ? "bar" : "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Number of Students",
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: horizontal ? 'y' : 'x', // 'y' for horizontal, 'x' for vertical
+                responsive: true,
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    createBarChart("classChart", {{ class_labels|safe }}, {{ class_counts|safe }}, true);  // Set 'true' for horizontal
+</script>
+{% endblock layout %}

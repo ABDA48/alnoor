@@ -1,0 +1,41 @@
+{% extends "main/layout.html" %}
+
+{% block layout %}
+{% include "main/components/heading.html" with name="Notes" %}
+{% include "main/tables/notes.html" %}
+         <!--     <h1 class="text-center my-4 "> Les notes des étudiants de la classe <span class="font-bold text-blue-600 ">{{ request.GET.classes }}</span>  pour le semestre <span class="font-bold text-blue-600 ">{{ request.GET.semestre }}</span>  de l'année <span class="font-bold text-blue-600 ">{{ request.GET.annees }}</span> sont disponibles pour le type d'évaluation : <span class="font-bold text-blue-600 "> {{ request.GET.type }}</span> .</h1>
+
+                -->
+  <!--  <canvas id="notesChart" width="400" height="200"></canvas> -->
+    <script>
+        // Data passed from Django template
+        const labels = {{ labels|safe }};
+        const data = {{ data|safe }};
+
+        // Prepare the chart
+        const ctx = document.getElementById('notesChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,  // Student names and class
+                datasets: [{
+                    label: 'Average Notes (Moyenne)',
+                    data: data,  // Average grades
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+
+
+{% endblock layout %}

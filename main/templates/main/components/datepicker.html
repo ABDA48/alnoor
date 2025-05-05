@@ -1,0 +1,67 @@
+<div class="relative max-w-sm ">
+    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+      <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+      </svg>
+    </div>
+    <input    onchange="sendDateToServer()"  id="default-datepicker" lang="fr"  type="date" class="bg-blue-50 border border-blue-300 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-blue-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Sélectionnez une date">
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the date input field
+        const datepicker = document.getElementById("default-datepicker");
+    
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split("T")[0];
+    
+        // Set the default value to today's date
+        datepicker.value = today;
+    });
+
+    function sendDateToServer() {
+        // Get the selected date from the input
+        const date = document.getElementById("default-datepicker").value;
+    
+        // Check if the date is valid
+        if (date) {
+            // Create a new FormData object
+            const formData = new FormData();
+            formData.append("selected_date", date);
+    
+            // Send the date via AJAX using Fetch API
+            fetch("/api/date/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken") // CSRF Token for Django
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data (optional)
+                console.log("Response:", data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    }
+    
+    // Helper function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";"); 
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+  </script>
